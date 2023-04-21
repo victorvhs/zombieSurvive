@@ -10,17 +10,20 @@ function love.load()
 	player.y = love.graphics.getHeight() / 2
 	player.speed = 190
 
-	tempRotation = 0
+	zombies = {}
 end
 
 function love.update(dt)
 	movePlayer(dt,player)
-	tempRotation = tempRotation + 0.01
 end
 
 function love.draw()
 	love.graphics.draw(sprite.background, 0, 0)
-	love.graphics.draw(sprite.player, player.x, player.y,tempRotation,nil, nil, sprite.player:getWidth()/2, sprite.player:getHeight()/2)
+	love.graphics.draw(sprite.player, player.x, player.y,getAngleFromMouse(player.x,player.y),nil, nil, sprite.player:getWidth()/2, sprite.player:getHeight()/2)
+
+	for i,z in ipairs(zombies) do 
+		love.graphics.draw(sprite.zombie,z.x,z.y,zombiePlayerAngle(z,player),nil,nil,sprite.zombie:getWidth()/2,sprite.zombie:getHeight()/2)
+	end
 
 end
 
@@ -37,4 +40,31 @@ function movePlayer(dt,player)
 	if love.keyboard.isDown("s") then
 		player.y = player.y + player.speed  * dt
 	end
+end
+
+function love.keypressed(key)
+	if key == "escape" then
+		love.event.quit()
+	end
+
+	if key == "space" then
+		spawnZombies(zombies)
+	end
+end
+
+
+
+function getAngleFromMouse(x1, y1)
+	return math.atan2(love.mouse.getY() - y1, love.mouse.getX() - x1)
+end
+function zombiePlayerAngle(enemy, player)
+	return math.atan2(player.y - enemy.y, player.x - enemy.x)
+end
+
+function spawnZombies(zombies)
+	local zombie = {}
+	zombie.x = math.random(0,love.graphics.getWidth())
+	zombie.y = math.random(0,love.graphics.getHeight())
+	zombie.speed = 100
+	table.insert(zombies, zombie)
 end
