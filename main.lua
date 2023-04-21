@@ -36,6 +36,13 @@ function love.update(dt)
 		b.x = b.x + (math.cos(b.direction)) * b.speed * dt
 		b.y = b.y + (math.sin(b.direction)) * b.speed * dt
 	end
+
+	for i=#bullets,1,-1 do
+		local b = bullets[i]
+		if b.x < 0 or b.y < 0 or b.x > love.graphics.getWidth() or b.y > love.graphics.getHeight() then
+			table.remove(bullets, i)
+		end
+	end
 end
 
 function love.draw()
@@ -47,7 +54,7 @@ function love.draw()
 	end
 
 	for i,b in ipairs(bullets) do
-		love.graphics.draw(sprite.bullet,b.x,b.y,b.direction,nil,nil,sprite.bullet:getWidth()/2,sprite.bullet:getHeight()/2)
+		love.graphics.draw(sprite.bullet,b.x,b.y,b.direction,0.5,0.5,sprite.bullet:getWidth()/2,sprite.bullet:getHeight()/2)
 	end
 end
 
